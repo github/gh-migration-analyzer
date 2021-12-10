@@ -1,0 +1,51 @@
+name: "My Product Area"
+
+targets:
+  epic-board:
+    type: project
+    htmlUrl: # TODO: enter the url to your epic board eg. https://github.com/orgs/github/projects/1595
+    stages: false
+  feature-board:
+    type: project
+    htmlUrl: # TODO: enter the url to your feature board eg. https://github.com/orgs/github/projects/1595
+    stages: true
+
+processing:
+  - name: project-reference-labeler
+    target: epic-board
+    config:
+      write-labels: true
+  - name: project-status-labeler
+    target: feature-board
+    config:
+      write-labels: true      
+      
+reports:
+  - name: execution-initiatives
+    title: "Initiative Execution"
+    timezoneOffset: -8
+    targets: ["feature-board"]      
+    sections:
+      - name: "project-groupby-status"
+        config:
+          target-date-comment-field: "Projected ship date"
+          limits:
+            # TODO: after first run and >, >> labels are on features
+            # Uncomment with WIP limits for each initiative
+            # These should match the > label strings 
+            # "Initiative One": 1
+            # "Initiative Two": 3
+
+  - name: execution-feature-lists
+    title: "Feature Status"
+    targets: ["feature-board"]
+    sections:
+      - name: "project-in-progress"
+      - name: "project-new"
+      - name: "project-done"
+
+  - name: execution-cycle-time
+    title: "Feature Cycle Time"
+    targets: ["feature-board"]
+    sections:
+      - name: "project-cycle-time"

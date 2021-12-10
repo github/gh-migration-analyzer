@@ -1,0 +1,42 @@
+{
+  "name": "migration-prep-tool",
+  "version": "1.0.0",
+  "description": "A command-line (cli) utility tool to help customers migrating repositories to GitHub plan for and size their migration.",
+  "main": "src/commands/commands.js",
+  "preferGlobal": true,
+  "bin": "bin/migration-prep-tool",
+  "type": "module",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/github/migration-prep-tool.git"
+  },
+  "keywords": [
+    "Octoshift",
+    "cli",
+    "migration",
+    "Azure"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/github/migration-prep-tool/issues"
+  },
+  "homepage": "https://github.com/github/migration-prep-tool#readme",
+  "dependencies": {
+    "commander": "^8.2.0",
+    "csv-writer": "^1.6.0",
+    "node-fetch": "^3.0.0",
+    "ora": "^6.0.1",
+    "p-limit": "^4.0.0",
+    "prompts": "^2.4.2"
+  },
+  "devDependencies": {
+    "jest": "^27.3.1"
+  }
+}

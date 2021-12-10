@@ -1,0 +1,3 @@
+#!/usr/bin/env node
+
+import * as all from 'src\commands\commands.js';
