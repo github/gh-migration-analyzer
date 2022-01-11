@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/github/migration-prep-tool.git"
+    "url": "git+https://github.com/github/gh-migration-analyzer.git"
   },
   "keywords": [
     "Octoshift",
@@ -23,11 +23,11 @@
     "Azure"
   ],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/github/migration-prep-tool/issues"
+    "url": "https://github.com/github/gh-migration-analyzer/issues"
   },
-  "homepage": "https://github.com/github/migration-prep-tool#readme",
+  "homepage": "https://github.com/github/gh-migration-analyzer#readme",
   "dependencies": {
     "commander": "^8.2.0",
     "csv-writer": "^1.6.0",
