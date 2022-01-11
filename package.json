@@ -1,10 +1,10 @@
 {
-  "name": "migration-prep-tool",
+  "name": "gh-migration-analyzer",
   "version": "1.0.0",
   "description": "A command-line (cli) utility tool to help customers migrating repositories to GitHub plan for and size their migration.",
   "main": "src/commands/commands.js",
   "preferGlobal": true,
-  "bin": "bin/migration-prep-tool",
+  "bin": "bin/gh-migration-analyzer",
   "type": "module",
   "directories": {
     "doc": "docs"
