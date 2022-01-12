@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import fetch from "node-fetch";
 import Ora from "ora";
 const spinner = Ora();

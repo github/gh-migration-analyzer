@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import program from 'commander';
 import { commandController, azureDevOpController, gitHubParser } from './commands/commands.js';
 

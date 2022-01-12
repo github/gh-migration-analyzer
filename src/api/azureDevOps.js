@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import fetch from "node-fetch";
 import * as exportCSV from "../services/exportCSV.js";
 import fs from "fs";

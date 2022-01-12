@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import Ora from "ora";
 /**
  * Handling status errors from API
