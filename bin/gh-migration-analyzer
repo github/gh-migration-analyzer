@@ -1,5 +1,0 @@
-#!/usr/bin/env node
-
-import program from 'src\commands\commands.js';
-
-program.parse(process.argv);
