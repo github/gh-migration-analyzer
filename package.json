@@ -1,5 +1,5 @@
 {
-  "name": "gh-migration-analyzer",
+  "name": "@github/gh-migration-analyzer",
   "version": "1.0.0",
   "description": "A command-line (cli) utility tool to help customers migrating repositories to GitHub plan for and size their migration.",
   "main": "src/index.js",
@@ -17,6 +17,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/github/gh-migration-analyzer.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   },
   "keywords": [
     "Octoshift",
