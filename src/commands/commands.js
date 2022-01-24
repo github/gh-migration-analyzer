@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /*
  * A command-line (cli) utility tool to help customers migrating
  * repositories to GitHub plan for and size their migration.

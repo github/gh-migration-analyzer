@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { createObjectCsvWriter as createCsvWriter } from "csv-writer";
 
 /**

@@ -2,9 +2,11 @@
   "name": "gh-migration-analyzer",
   "version": "1.0.0",
   "description": "A command-line (cli) utility tool to help customers migrating repositories to GitHub plan for and size their migration.",
-  "main": "src/commands/commands.js",
+  "main": "src/index.js",
   "preferGlobal": true,
-  "bin": "bin/gh-migration-analyzer",
+  "bin": {
+    "gh-migration-analyzer": "./bin/gh-migration-analyzer.js"
+  },
   "type": "module",
   "directories": {
     "doc": "docs"
@@ -22,7 +24,7 @@
     "migration",
     "Azure"
   ],
-  "author": "",
+  "author": "GitHub Migration Tools",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/github/gh-migration-analyzer/issues"
@@ -31,7 +33,7 @@
   "dependencies": {
     "commander": "^8.2.0",
     "csv-writer": "^1.6.0",
-    "node-fetch": "^3.0.0",
+    "node-fetch": "^2.6.0",
     "ora": "^6.0.1",
     "p-limit": "^4.0.0",
     "prompts": "^2.4.2"
