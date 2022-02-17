@@ -15,7 +15,7 @@ Use the command ```cd <pathname of desired parent directory> && git clone https:
 You will need to generate a Personal Access Token (PAT) within your source (Azure DevOps or GitHub). The following scopes are required:
 
 * For Azure DevOps: `read` for `Code`.
-* For GitHub Cloud: `repo:status`.  
+* For GitHub Cloud: `repo`.  
 ## Dependencies
 
 Use the command ```cd <pathname of migration analyzer directory> && npm install``` to change to your ```migration-analyzer``` directory.  This will install the following project dependencies:
