@@ -24,7 +24,7 @@ export const promptForToken = (versionControl) => {
 };
 
 /**
- * Fetching all data in organization provided after successfull authentication
+ * Fetching all data in organization provided after successful authentication
  *
  * @param {object} credentials the credentials for chosen version control
  */
@@ -43,7 +43,7 @@ export const azureDevOpController = async (credentials) => {
 };
 
 /**
- * Fetching all data in organization provided after successfull authentication
+ * Fetching all data in organization provided after successful authentication
  *
  * @param {object} credentials the credential for chosen version control
  */
