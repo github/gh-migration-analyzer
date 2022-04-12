@@ -16,6 +16,7 @@ You will need to generate a Personal Access Token (PAT) within your source (Azur
 
 * For Azure DevOps: `read` for `Code`.
 * For GitHub Cloud: `repo`.  
+* For GitHub Server (3.4+): `repo`
 ## Dependencies
 
 Use the command ```cd <pathname of migration analyzer directory> && npm install``` to change to your ```migration-analyzer``` directory.  This will install the following project dependencies:
@@ -52,6 +53,7 @@ node src/index.js GH-org [options]
 Options:
   -o, --organization <organization> GitHub organization name (required)
   -t, --token <PAT> GitHub personal access token
+  -s, --server <GRAPHQL URL> GraphQL endpoint for a GHES instance. 
   -h, --help Help command for GitHub options
 
 ````
@@ -60,7 +62,15 @@ You can alternatively export your PAT as environment variable if you do not want
 
 ````export GH_PAT=<PAT>```` or ````export_ADO=<PAT>````
 
-The tool will export CSV files a new directory within the project's root directory. If GitHub is the source, the tool will export two CSV files: one containing a list of repositories with the number of Pull Requests, Issues, Projects, and whether wikis are enabled. The other will contain organization-level rollup metrics (number of repostories, pull requests, issues, and projects). If Azure DevOps is the source, the CSV will list each project, and the repositories and pull requets in each. 
+The tool will export CSV files a new directory within the project's root directory. If GitHub is the source, the tool will export two CSV files: one containing a list of repositories with the number of Pull Requests, Issues, Projects, and whether wikis are enabled. The other will contain organization-level rollup metrics (number of repositories, pull requests, issues, and projects). If Azure DevOps is the source, the CSV will list each project, and the repositories and pull requets in each. 
+
+## Usage for GitHub Enterprise Server (GHES)
+The tool can be run against a GHES 3.4 or newer to gather migration statistics. Clone this repository onto a computer that has access to your GHES instance's web portal. Ensure that you've run the installation steps described earlier in this readme. You'll need to supply the GraphQL endpoint for your GHES instance in the `-s` option. You can learn how to get this endpoint in the [forming calls with GraphQL](https://docs.github.com/en/enterprise-server@3.4/graphql/guides/forming-calls-with-graphql#the-graphql-endpoint) documentation GitHub provides. The final command will be structured like the below example. 
+
+```
+node src/index.js GH-org -o <ORG Name> -s <GHES GraphQL Endpoint>
+```
+
 ## Project Roadmap
 
 The current areas of focus for the project are:

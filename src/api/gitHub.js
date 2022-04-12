@@ -3,6 +3,8 @@
 import fetch from "node-fetch";
 import Ora from "ora";
 const spinner = Ora();
+const githubGraphQL = "https://api.github.com/graphql";
+//const githubGraphQL = "https://octoshift-ghe.westus2.cloudapp.azure.com/api/graphql";
 import * as exportCSV from "../services/exportCSV.js";
 import fs from "fs";
 import { handleStatusError } from "../services/handleStatusError.js";
@@ -41,9 +43,10 @@ let orgMetrics = {
  * @param {string} org the organization
  * @param {string} token the token
  * @param {string} cursor the last repository fetched
+ * @param {[Objects]} server the graphql endpoint for a GHES instance
  */
-export const fetchRepoInOrg = async (org, token, cursor) => {
-  return await fetch("https://api.github.com/graphql", {
+export const fetchRepoInOrg = async (org, token, server, cursor) => {
+  return await fetch(await determineGraphQLEndpoint(server), {
     method: "POST",
     headers: {
       Authorization: `bearer ${token}`,
@@ -99,8 +102,8 @@ export const fetchRepoInOrg = async (org, token, cursor) => {
  * @param {string} token the token
  * @returns {object} the fetched org information
  */
-export const fetchOrgInfo = async (org, token) => {
-  return await fetch("https://api.github.com/graphql", {
+export const fetchOrgInfo = async (org, server, token) => {
+  return await fetch(await determineGraphQLEndpoint(server), {
     method: "POST",
     headers: {
       Authorization: `bearer ${token}`,
@@ -128,8 +131,8 @@ export const fetchOrgInfo = async (org, token) => {
 };
 
 /**
- * Authroize the user with GitHub
- * Continue with fetching metics given successfull authroization
+ * Authorize the user with GitHub
+ * Continue with fetching metics given successful authorization
  *
  * @param {object} credentials the credentials
  */
@@ -138,6 +141,7 @@ export const authorization = async (credentials) => {
   fetched = await fetchRepoInOrg(
     credentials.organization,
     credentials.token,
+    credentials.server, 
     ""
   );
 
@@ -146,23 +150,25 @@ export const authorization = async (credentials) => {
     process.exit();
   }
 
-  // Successfulll Authorization
+  // Successful Authorization
   spinner.succeed("Authorized with GitHub\n");
   auth = credentials;
-  await fetchingController();
+  await fetchingController(credentials.server);
 };
 
 /**
  * Fetching and Storing metrics controller
+ * 
+ * * @param {[Objects]} server the graphql endpoint for a GHES instance
  */
-export const fetchingController = async () => {
+export const fetchingController = async (server) => {
   //fetching PR and ISSUE metrics
   await fetchRepoMetrics(fetched.data.organization.repositories.edges);
 
   if (metrics) {
     let org = auth.organization.replace(/\s/g, "");
     await storeRepoMetrics(org);
-    await storeOrgMetrics(org);
+    await storeOrgMetrics(org, server);
   }
 };
 
@@ -247,12 +253,28 @@ export const storeRepoMetrics = async (organization) => {
   spinner.succeed(`Exporting Completed: ${path}`);
 };
 
+
+/**
+ * Determine if the user is targeting a GHES instance or not. 
+ * 
+ * * @param {[Objects]} server the graphql endpoint for a GHES instance
+ */
+export const determineGraphQLEndpoint = async (server) => {
+  if (!server) {
+    return githubGraphQL;
+  } else {
+    return server;
+  }
+};
+
 /**
  * Store Organization information into seperate CSV
  *
  * @param {String} organization the organization name
+ * 
+ * @param {[Objects]} server the graphql endpoint for a GHES instance
  */
-export const storeOrgMetrics = async (organization) => {
+export const storeOrgMetrics = async (organization, server) => {
   const dir = `./${organization}-metrics`;
   const path = `${dir}/org-metrics.csv`;
   if (!fs.existsSync(dir)) {
@@ -270,7 +292,7 @@ export const storeOrgMetrics = async (organization) => {
     { pr: 0, issue: 0 }
   );
 
-  const orgInfo = await fetchOrgInfo(organization, auth.token);
+  const orgInfo = await fetchOrgInfo(organization, server, auth.token);
   const storeData = [
     {
       numOfRepos: metrics.length,

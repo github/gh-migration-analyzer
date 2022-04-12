@@ -53,11 +53,16 @@ import { commandController, azureDevOpController, gitHubParser } from './command
 *
 * GH-org --organization <org> --token <PAT>
 * <input PAT>
+*
+* or if you're targeting a GHES instance
+* 
+* GH-org --organization <org> --server <GraphQL Endpoint>
 */
 program
   .command("GH-org")
   .option("-o, --organization <organization>", "Organization Name")
   .option("-t, --token <PAT>", "Personal Access Token")
+  .option("-s, --server <GRAPHQL URL>", "GHES GraphQL Endpoint")
   .alias("a")
   .description("Fetch GitHub Organization Metrics")
   .action(async (options) =>
