@@ -4,7 +4,6 @@ import fetch from "node-fetch";
 import Ora from "ora";
 const spinner = Ora();
 const githubGraphQL = "https://api.github.com/graphql";
-//const githubGraphQL = "https://octoshift-ghe.westus2.cloudapp.azure.com/api/graphql";
 import * as exportCSV from "../services/exportCSV.js";
 import fs from "fs";
 import { handleStatusError } from "../services/handleStatusError.js";
@@ -214,6 +213,7 @@ export const fetchRepoMetrics = async (repositories) => {
     const result = await fetchRepoInOrg(
       auth.organization,
       auth.token,
+      auth.server,
       `, after: "${cursor}"`
     );
     spinner.succeed(
