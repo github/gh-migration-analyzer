@@ -8,7 +8,7 @@ The tool is for use alongside GitHub's Enterprise Importer (GEI). It is a self-s
 The tool runs in a [Node.js](https://nodejs.org/) runtime environment.  It requires version 14 or greater. 
 ## Installation
 
-Use the command ```cd <pathname of desired parent directory> && git clone https://github.com/github/migration-prep-tool.git``` to change to the desired parent directory and install the tool. 
+Use the command ```cd <pathname of desired parent directory> && git clone https://github.com/github/gh-migration-analyzer.git``` to change to the desired parent directory and install the tool. 
 
 ## Personal Access Tokens
 
