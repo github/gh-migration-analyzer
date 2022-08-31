@@ -90,7 +90,7 @@ export const fetchRepoInOrg = async (org, token, server, cursor) => {
       return res.json();
     })
     .catch((err) => {
-      handleStatusError(500);
+      handleStatusError(500, err);
     });
 };
 

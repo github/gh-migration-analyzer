@@ -6,7 +6,7 @@ import Ora from "ora";
  *
  * @param {int} status the status code
  */
-export const handleStatusError = (status) => {
+export const handleStatusError = (status, err) => {
   const spinner = Ora();
   switch (status) {
     case 404:
@@ -19,6 +19,7 @@ export const handleStatusError = (status) => {
       break;
     case 500:
       spinner.fail("Server Side Error.", err);
+	  console.log(err);
       process.exit();
       break;
   }

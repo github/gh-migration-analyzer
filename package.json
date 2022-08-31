@@ -31,8 +31,9 @@
   },
   "homepage": "https://github.com/github/gh-migration-analyzer#readme",
   "dependencies": {
-    "commander": "^8.2.0",
+    "commander": "^8.3.0",
     "csv-writer": "^1.6.0",
+    "minimist": "^1.2.6",
     "node-fetch": "^2.6.0",
     "ora": "^6.0.1",
     "p-limit": "^4.0.0",
