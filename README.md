@@ -60,7 +60,7 @@ Options:
 
 You can alternatively export your PAT as environment variable if you do not want to pass it in with the command. 
 
-````export GH_PAT=<PAT>```` or ````export_ADO=<PAT>````
+````export GH_PAT=<PAT>```` or ````export ADO_PAT=<PAT>````
 
 The tool will export CSV files a new directory within the project's root directory. If GitHub is the source, the tool will export two CSV files: one containing a list of repositories with the number of Pull Requests, Issues, Projects, and whether wikis are enabled. The other will contain organization-level rollup metrics (number of repositories, pull requests, issues, and projects). If Azure DevOps is the source, the CSV will list each project, and the repositories and pull requests in each. 
 
