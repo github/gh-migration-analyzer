@@ -37,7 +37,7 @@ let orgMetrics = {
 };
 
 /**
- * Fetch 100 repositories at a cursor given Orginization and valid PAT
+ * Fetch 100 repositories at a cursor given Organization and valid PAT
  *
  * @param {string} org the organization
  * @param {string} token the token
@@ -242,7 +242,7 @@ export const storeRepoMetrics = async (organization) => {
     { id: "name", title: "Repository Name" },
     { id: "numOfPullRequests", title: "Number Of Pull Requests" },
     { id: "numOfIssues", title: "Number of Issues" },
-    { id: "numOfProjects", title: "Number of Project" },
+    { id: "numOfProjects", title: "Number of Projects" },
     { id: "wikiEnabled", title: "Wiki Enabled" },
   ];
 
@@ -268,7 +268,7 @@ export const determineGraphQLEndpoint = async (server) => {
 };
 
 /**
- * Store Organization information into seperate CSV
+ * Store Organization information into separate CSV
  *
  * @param {String} organization the organization name
  * 
