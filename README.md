@@ -16,7 +16,7 @@ You will need to generate a Personal Access Token (PAT) within your source (Azur
 
 * For Azure DevOps: `read` for `Code`.
 * For GitHub Cloud: `repo`.  
-* For GitHub Server (3.4+): `repo`
+
 ## Dependencies
 
 Use the command ```cd <pathname of migration analyzer directory> && npm install``` to change to your ```migration-analyzer``` directory.  This will install the following project dependencies:
