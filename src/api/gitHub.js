@@ -80,6 +80,9 @@ export const fetchRepoInOrg = async (org, token, server, cursor) => {
                 packages(first: 1) {
                   totalCount
                 }
+                releases(first: 1) {
+                  totalCount
+                }
                 name
                 id
                 url
@@ -194,6 +197,7 @@ export const fetchRepoMetrics = async (repositories) => {
       numOfProjects: repo.node.projects.totalCount,
       numOfDiscussions: repo.node.discussions.totalCount,
       numOfPackages: repo.node.packages.totalCount,
+      numOfReleases: repo.node.releases.totalCount,
       wikiEnabled: repo.node.hasWikiEnabled,
     };
     if (repo.node.pullRequests.totalCount > orgMetrics.mostPr) {
@@ -253,6 +257,7 @@ export const storeRepoMetrics = async (organization) => {
     { id: "numOfProjects", title: "Number of Projects" },
     { id: "numOfDiscussions", title: "Number of Discussions" },
     { id: "numOfPackages", title: "Number of Packages" },
+    { id: "numOfReleases", title: "Number of Releases" },
     { id: "wikiEnabled", title: "Wiki Enabled" },
   ];
 
