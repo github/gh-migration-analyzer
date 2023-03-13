@@ -87,6 +87,7 @@ export const fetchRepoInOrg = async (org, token, server, cursor) => {
                 id
                 url
                 isPrivate
+                isArchived
                 diskUsage
               }
             }
@@ -193,6 +194,7 @@ export const fetchRepoMetrics = async (repositories) => {
     );
     let repoInfo = {
       name: repo.node.name,
+      isArchived: repo.node.isArchived,
       numOfPullRequests: repo.node.pullRequests.totalCount,
       numOfIssues: repo.node.issues.totalCount,
       numOfProjects: repo.node.projects.totalCount,
@@ -254,6 +256,7 @@ export const storeRepoMetrics = async (organization) => {
 
   let headers = [
     { id: "name", title: "Repository Name" },
+    { id: "isArchived", title: "Is Archived?" },
     { id: "numOfPullRequests", title: "Number Of Pull Requests" },
     { id: "numOfIssues", title: "Number of Issues" },
     { id: "numOfProjects", title: "Number of Projects" },
