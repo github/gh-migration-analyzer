@@ -87,6 +87,7 @@ export const fetchRepoInOrg = async (org, token, server, cursor) => {
                 id
                 url
                 isPrivate
+                diskUsage
               }
             }
           }
@@ -199,6 +200,7 @@ export const fetchRepoMetrics = async (repositories) => {
       numOfPackages: repo.node.packages.totalCount,
       numOfReleases: repo.node.releases.totalCount,
       wikiEnabled: repo.node.hasWikiEnabled,
+      diskUsage: repo.node.diskUsage,
     };
     if (repo.node.pullRequests.totalCount > orgMetrics.mostPr) {
       orgMetrics.mostPr = repo.node.pullRequests.totalCount;
@@ -259,6 +261,7 @@ export const storeRepoMetrics = async (organization) => {
     { id: "numOfPackages", title: "Number of Packages" },
     { id: "numOfReleases", title: "Number of Releases" },
     { id: "wikiEnabled", title: "Wiki Enabled" },
+    { id: "diskUsage", title: "Size (KiB)" },
   ];
 
   console.log();
