@@ -8,4 +8,4 @@ jobs:
     - name: Install modules
       run: yarn
     - name: Run ESLint
-      run: npx eslint .
+      run: npm install eslint-config-prettier eslint-plugin-prettier && npx eslint .
