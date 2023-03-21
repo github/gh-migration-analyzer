@@ -1,7 +1,11 @@
 #!/usr/bin/env node
 
-import program from 'commander'
-import { commandController, azureDevOpController, gitHubParser } from './commands/commands.js'
+import program from "commander";
+import {
+  commandController,
+  azureDevOpController,
+  gitHubParser,
+} from "./commands/commands.js";
 
 /**
  * CLI command ADO-org
@@ -22,51 +26,51 @@ import { commandController, azureDevOpController, gitHubParser } from './command
  *
  */
 program
-  .command('ADO-org')
-  .option('-o, --organization <organization>', 'Organization Name')
-  .option('-t, --token <PAT>', 'Personal Access Token')
-  .option('-p, --project <project>', 'Project Name')
-  .alias('a')
-  .description('Fetch AzureDevOps Organization Metrics')
+  .command("ADO-org")
+  .option("-o, --organization <organization>", "Organization Name")
+  .option("-t, --token <PAT>", "Personal Access Token")
+  .option("-p, --project <project>", "Project Name")
+  .alias("a")
+  .description("Fetch AzureDevOps Organization Metrics")
   .action(async (options) =>
     commandController(
       process.env.ADO_PAT,
       azureDevOpController,
       options,
-      'AzureDevOps'
+      "AzureDevOps"
     )
-  )
+  );
 
 /**
-* CLI command GH-org
-*
-* Usage:
-* export GH_PAT=<PAT>
-* GH-org --organization <org>
-*
-* or
-*
-* GH-org --organization <org>
-* <input PAT>
-*
-* or
-*
-* GH-org --organization <org> --token <PAT>
-* <input PAT>
-*
-* or if you're targeting a GHES instance
-*
-* GH-org --organization <org> --server <GraphQL Endpoint>
-*/
+ * CLI command GH-org
+ *
+ * Usage:
+ * export GH_PAT=<PAT>
+ * GH-org --organization <org>
+ *
+ * or
+ *
+ * GH-org --organization <org>
+ * <input PAT>
+ *
+ * or
+ *
+ * GH-org --organization <org> --token <PAT>
+ * <input PAT>
+ *
+ * or if you're targeting a GHES instance
+ *
+ * GH-org --organization <org> --server <GraphQL Endpoint>
+ */
 program
-  .command('GH-org')
-  .option('-o, --organization <organization>', 'Organization Name')
-  .option('-t, --token <PAT>', 'Personal Access Token')
-  .option('-s, --server <GRAPHQL URL>', 'GHES GraphQL Endpoint')
-  .alias('a')
-  .description('Fetch GitHub Organization Metrics')
+  .command("GH-org")
+  .option("-o, --organization <organization>", "Organization Name")
+  .option("-t, --token <PAT>", "Personal Access Token")
+  .option("-s, --server <GRAPHQL URL>", "GHES GraphQL Endpoint")
+  .alias("a")
+  .description("Fetch GitHub Organization Metrics")
   .action(async (options) =>
-    commandController(process.env.GH_PAT, gitHubParser, options, 'GitHub')
-  )
+    commandController(process.env.GH_PAT, gitHubParser, options, "GitHub")
+  );
 
-program.parse(process.argv)
+program.parse(process.argv);

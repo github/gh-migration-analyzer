@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { createObjectCsvWriter as createCsvWriter } from 'csv-writer'
+import { createObjectCsvWriter as createCsvWriter } from "csv-writer";
 
 /**
  * To store metics in a CSV file
@@ -11,5 +11,5 @@ export const csvExporter = (path, header) =>
   createCsvWriter({
     path,
     header,
-    headerIdDelimiter: '.'
-  })
+    headerIdDelimiter: ".",
+  });

@@ -1,40 +1,40 @@
 #!/usr/bin/env node
 
-import fetch from 'node-fetch'
-import Ora from 'ora'
-import * as exportCSV from '../services/exportCSV.js'
-import fs from 'fs'
-import { handleStatusError } from '../services/handleStatusError.js'
-const spinner = Ora()
-const githubGraphQL = 'https://api.github.com/graphql'
+import fetch from "node-fetch";
+import Ora from "ora";
+import * as exportCSV from "../services/exportCSV.js";
+import fs from "fs";
+import { handleStatusError } from "../services/handleStatusError.js";
+const spinner = Ora();
+const githubGraphQL = "https://api.github.com/graphql";
 
 /**
  * Running PullRequest and issues array
  */
-const metrics = []
+const metrics = [];
 
 /**
  * Valid user credentials
  */
-let auth = {}
+let auth = {};
 
 /**
  * Initial fetched repositories in Organization
  */
-let fetched = {}
+let fetched = {};
 
 /**
  * Count number of repo
  */
-let count = 0
+let count = 0;
 
 /**
  * Org metrics
  */
 const orgMetrics = {
   mostPr: 0,
-  mostIssues: 0
-}
+  mostIssues: 0,
+};
 
 /**
  * Fetch 100 repositories at a cursor given Organization and valid PAT
@@ -46,9 +46,9 @@ const orgMetrics = {
  */
 export const fetchRepoInOrg = async (org, token, server, cursor) => {
   return await fetch(await determineGraphQLEndpoint(server), {
-    method: 'POST',
+    method: "POST",
     headers: {
-      Authorization: `bearer ${token}`
+      Authorization: `bearer ${token}`,
     },
     body: JSON.stringify({
       query: `{
@@ -94,17 +94,17 @@ export const fetchRepoInOrg = async (org, token, server, cursor) => {
             }
           }
         }
-      }`
-    })
+      }`,
+    }),
   })
     .then((res) => {
-      handleStatusError(res.status)
-      return res.json()
+      handleStatusError(res.status);
+      return res.json();
     })
     .catch((err) => {
-      handleStatusError(500, err)
-    })
-}
+      handleStatusError(500, err);
+    });
+};
 
 /**
  * Fetch org information
@@ -115,9 +115,9 @@ export const fetchRepoInOrg = async (org, token, server, cursor) => {
  */
 export const fetchOrgInfo = async (org, server, token) => {
   return await fetch(await determineGraphQLEndpoint(server), {
-    method: 'POST',
+    method: "POST",
     headers: {
-      Authorization: `bearer ${token}`
+      Authorization: `bearer ${token}`,
     },
     body: JSON.stringify({
       query: `{
@@ -129,17 +129,17 @@ export const fetchOrgInfo = async (org, server, token) => {
             totalCount
           }
         }
-      }`
-    })
+      }`,
+    }),
   })
     .then((res) => {
-      handleStatusError(res.status)
-      return res.json()
+      handleStatusError(res.status);
+      return res.json();
     })
     .catch((_err) => {
-      handleStatusError(500)
-    })
-}
+      handleStatusError(500);
+    });
+};
 
 /**
  * Authorize the user with GitHub
@@ -148,24 +148,24 @@ export const fetchOrgInfo = async (org, server, token) => {
  * @param {object} credentials the credentials
  */
 export const authorization = async (credentials) => {
-  spinner.start('Authorizing with GitHub')
+  spinner.start("Authorizing with GitHub");
   fetched = await fetchRepoInOrg(
     credentials.organization,
     credentials.token,
     credentials.server,
-    ''
-  )
+    ""
+  );
 
   if (fetched.errors) {
-    spinner.fail(` ${fetched.errors[0].message}`)
-    process.exit()
+    spinner.fail(` ${fetched.errors[0].message}`);
+    process.exit();
   }
 
   // Successful Authorization
-  spinner.succeed('Authorized with GitHub\n')
-  auth = credentials
-  await fetchingController(credentials.server)
-}
+  spinner.succeed("Authorized with GitHub\n");
+  auth = credentials;
+  await fetchingController(credentials.server);
+};
 
 /**
  * Fetching and Storing metrics controller
@@ -174,14 +174,14 @@ export const authorization = async (credentials) => {
  */
 export const fetchingController = async (server) => {
   // fetching PR and ISSUE metrics
-  await fetchRepoMetrics(fetched.data.organization.repositories.edges)
+  await fetchRepoMetrics(fetched.data.organization.repositories.edges);
 
   if (metrics) {
-    const org = auth.organization.replace(/\s/g, '')
-    await storeRepoMetrics(org)
-    await storeOrgMetrics(org, server)
+    const org = auth.organization.replace(/\s/g, "");
+    await storeRepoMetrics(org);
+    await storeOrgMetrics(org, server);
   }
-}
+};
 
 /**
  * Fetch PR and ISSUE metrics given list of repositories in org
@@ -192,7 +192,7 @@ export const fetchRepoMetrics = async (repositories) => {
   for (const repo of repositories) {
     spinner.start(
       `(${count}/${fetched.data.organization.repositories.totalCount}) Fetching metrics for repo ${repo.node.name}`
-    )
+    );
     const repoInfo = {
       name: repo.node.name,
       pushedAt: repo.node.pushedAt,
@@ -204,20 +204,20 @@ export const fetchRepoMetrics = async (repositories) => {
       numOfPackages: repo.node.packages.totalCount,
       numOfReleases: repo.node.releases.totalCount,
       wikiEnabled: repo.node.hasWikiEnabled,
-      diskUsage: repo.node.diskUsage
-    }
+      diskUsage: repo.node.diskUsage,
+    };
 
     if (repo.node.pullRequests.totalCount > orgMetrics.mostPr) {
-      orgMetrics.mostPr = repo.node.pullRequests.totalCount
+      orgMetrics.mostPr = repo.node.pullRequests.totalCount;
     }
     if (repo.node.projects.totalCount > orgMetrics.mostIssues) {
-      orgMetrics.mostIssues = repo.node.projects.totalCount
+      orgMetrics.mostIssues = repo.node.projects.totalCount;
     }
-    count = count + 1
-    metrics.push(repoInfo)
+    count = count + 1;
+    metrics.push(repoInfo);
     spinner.succeed(
       `(${count}/${fetched.data.organization.repositories.totalCount}) Fetching metrics for repo ${repo.node.name}`
-    )
+    );
   }
 
   // paginating calls
@@ -227,20 +227,20 @@ export const fetchRepoMetrics = async (repositories) => {
     // get cursor to last repository
     spinner.start(
       `(${count}/${fetched.data.organization.repositories.totalCount}) Fetching next 50 repos`
-    )
-    const cursor = repositories[repositories.length - 1].cursor
+    );
+    const cursor = repositories[repositories.length - 1].cursor;
     const result = await fetchRepoInOrg(
       auth.organization,
       auth.token,
       auth.server,
       `, after: "${cursor}"`
-    )
+    );
     spinner.succeed(
       `(${count}/${fetched.data.organization.repositories.totalCount}) Fetched next 100 repos`
-    )
-    await fetchRepoMetrics(result.data.organization.repositories.edges)
+    );
+    await fetchRepoMetrics(result.data.organization.repositories.edges);
   }
-}
+};
 
 /**
  * Call CSV service to export repository pull request information
@@ -251,31 +251,31 @@ export const fetchRepoMetrics = async (repositories) => {
  * @param {Object} mostIssue the repository with most issues
  */
 export const storeRepoMetrics = async (organization) => {
-  const dir = `./${organization}-metrics`
+  const dir = `./${organization}-metrics`;
   if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir)
+    fs.mkdirSync(dir);
   }
 
   const headers = [
-    { id: 'name', title: 'Repository Name' },
-    { id: 'pushedAt', title: 'Last Push Date' },
-    { id: 'isArchived', title: 'Is Archived?' },
-    { id: 'numOfPullRequests', title: 'Number Of Pull Requests' },
-    { id: 'numOfIssues', title: 'Number of Issues' },
-    { id: 'numOfProjects', title: 'Number of Projects' },
-    { id: 'numOfDiscussions', title: 'Number of Discussions' },
-    { id: 'numOfPackages', title: 'Number of Packages' },
-    { id: 'numOfReleases', title: 'Number of Releases' },
-    { id: 'wikiEnabled', title: 'Wiki Enabled' },
-    { id: 'diskUsage', title: 'Size (KiB)' }
-  ]
+    { id: "name", title: "Repository Name" },
+    { id: "pushedAt", title: "Last Push Date" },
+    { id: "isArchived", title: "Is Archived?" },
+    { id: "numOfPullRequests", title: "Number Of Pull Requests" },
+    { id: "numOfIssues", title: "Number of Issues" },
+    { id: "numOfProjects", title: "Number of Projects" },
+    { id: "numOfDiscussions", title: "Number of Discussions" },
+    { id: "numOfPackages", title: "Number of Packages" },
+    { id: "numOfReleases", title: "Number of Releases" },
+    { id: "wikiEnabled", title: "Wiki Enabled" },
+    { id: "diskUsage", title: "Size (KiB)" },
+  ];
 
-  console.log()
-  const path = `${dir}/repo-metrics.csv`
-  spinner.start('Exporting...')
-  await exportCSV.csvExporter(path, headers).writeRecords(metrics)
-  spinner.succeed(`Exporting Completed: ${path}`)
-}
+  console.log();
+  const path = `${dir}/repo-metrics.csv`;
+  spinner.start("Exporting...");
+  await exportCSV.csvExporter(path, headers).writeRecords(metrics);
+  spinner.succeed(`Exporting Completed: ${path}`);
+};
 
 /**
  * Determine if the user is targeting a GHES instance or not.
@@ -284,11 +284,11 @@ export const storeRepoMetrics = async (organization) => {
  */
 export const determineGraphQLEndpoint = async (server) => {
   if (!server) {
-    return githubGraphQL
+    return githubGraphQL;
   } else {
-    return server
+    return server;
   }
-}
+};
 
 /**
  * Store Organization information into separate CSV
@@ -298,10 +298,10 @@ export const determineGraphQLEndpoint = async (server) => {
  * @param {[Objects]} server the graphql endpoint for a GHES instance
  */
 export const storeOrgMetrics = async (organization, server) => {
-  const dir = `./${organization}-metrics`
-  const path = `${dir}/org-metrics.csv`
+  const dir = `./${organization}-metrics`;
+  const path = `${dir}/org-metrics.csv`;
   if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir)
+    fs.mkdirSync(dir);
   }
 
   // Total number of pull-request and issues
@@ -309,13 +309,13 @@ export const storeOrgMetrics = async (organization, server) => {
     (prev, current) => {
       return {
         pr: prev.pr + current.numOfPullRequests,
-        issue: prev.issue + current.numOfIssues
-      }
+        issue: prev.issue + current.numOfIssues,
+      };
     },
     { pr: 0, issue: 0 }
-  )
+  );
 
-  const orgInfo = await fetchOrgInfo(organization, server, auth.token)
+  const orgInfo = await fetchOrgInfo(organization, server, auth.token);
   const storeData = [
     {
       numOfRepos: metrics.length,
@@ -324,22 +324,22 @@ export const storeOrgMetrics = async (organization, server) => {
       mostPrs: orgMetrics.mostPr,
       averagePrs: Math.round(totalCount.pr / metrics.length),
       mostIssues: orgMetrics.mostIssues,
-      averageIssues: Math.round(totalCount.issue / metrics.length)
-    }
-  ]
+      averageIssues: Math.round(totalCount.issue / metrics.length),
+    },
+  ];
 
   const headers = [
-    { id: 'numOfMembers', title: 'Number of Members' },
-    { id: 'numOfProjects', title: 'Number of Projects' },
-    { id: 'numOfRepos', title: 'Number of Repositories' },
-    { id: 'mostPrs', title: 'Repo with Most Pull Requests' },
-    { id: 'averagePrs', title: 'Average Pull Requests' },
-    { id: 'mostIssues', title: 'Repo with Most Issues' },
-    { id: 'averageIssues', title: 'Average Issues' }
-  ]
+    { id: "numOfMembers", title: "Number of Members" },
+    { id: "numOfProjects", title: "Number of Projects" },
+    { id: "numOfRepos", title: "Number of Repositories" },
+    { id: "mostPrs", title: "Repo with Most Pull Requests" },
+    { id: "averagePrs", title: "Average Pull Requests" },
+    { id: "mostIssues", title: "Repo with Most Issues" },
+    { id: "averageIssues", title: "Average Issues" },
+  ];
   if (storeData) {
-    spinner.start('Exporting...')
-    await exportCSV.csvExporter(path, headers).writeRecords(storeData)
-    spinner.succeed(`Exporting Completed: ${path}`)
+    spinner.start("Exporting...");
+    await exportCSV.csvExporter(path, headers).writeRecords(storeData);
+    spinner.succeed(`Exporting Completed: ${path}`);
   }
-}
+};
