@@ -74,10 +74,22 @@ export const fetchRepoInOrg = async (org, token, server, cursor) => {
                 pullRequests(first: 1) {
                   totalCount
                 }
+                discussions(first: 1) {
+                  totalCount
+                }
+                packages(first: 1) {
+                  totalCount
+                }
+                releases(first: 1) {
+                  totalCount
+                }
                 name
                 id
                 url
+                pushedAt
                 isPrivate
+                isArchived
+                diskUsage
               }
             }
           }
@@ -183,11 +195,18 @@ export const fetchRepoMetrics = async (repositories) => {
     )
     const repoInfo = {
       name: repo.node.name,
+      pushedAt: repo.node.pushedAt,
+      isArchived: repo.node.isArchived,
       numOfPullRequests: repo.node.pullRequests.totalCount,
       numOfIssues: repo.node.issues.totalCount,
       numOfProjects: repo.node.projects.totalCount,
-      wikiEnabled: repo.node.hasWikiEnabled
+      numOfDiscussions: repo.node.discussions.totalCount,
+      numOfPackages: repo.node.packages.totalCount,
+      numOfReleases: repo.node.releases.totalCount,
+      wikiEnabled: repo.node.hasWikiEnabled,
+      diskUsage: repo.node.diskUsage
     }
+
     if (repo.node.pullRequests.totalCount > orgMetrics.mostPr) {
       orgMetrics.mostPr = repo.node.pullRequests.totalCount
     }
@@ -239,10 +258,16 @@ export const storeRepoMetrics = async (organization) => {
 
   const headers = [
     { id: 'name', title: 'Repository Name' },
+    { id: 'pushedAt', title: 'Last Push Date' },
+    { id: 'isArchived', title: 'Is Archived?' },
     { id: 'numOfPullRequests', title: 'Number Of Pull Requests' },
     { id: 'numOfIssues', title: 'Number of Issues' },
     { id: 'numOfProjects', title: 'Number of Projects' },
-    { id: 'wikiEnabled', title: 'Wiki Enabled' }
+    { id: 'numOfDiscussions', title: 'Number of Discussions' },
+    { id: 'numOfPackages', title: 'Number of Packages' },
+    { id: 'numOfReleases', title: 'Number of Releases' },
+    { id: 'wikiEnabled', title: 'Wiki Enabled' },
+    { id: 'diskUsage', title: 'Size (KiB)' }
   ]
 
   console.log()
