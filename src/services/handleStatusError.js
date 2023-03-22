@@ -19,7 +19,7 @@ export const handleStatusError = (status, err) => {
       break;
     case 500:
       spinner.fail("Server Side Error.", err);
-	  console.log(err);
+      console.log(err);
       process.exit();
       break;
   }

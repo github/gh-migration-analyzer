@@ -5,7 +5,7 @@ import * as exportCSV from "../services/exportCSV.js";
 import fs from "fs";
 import Ora from "ora";
 import pLimit from "p-limit";
-import {handleStatusError} from "../services/handleStatusError.js";
+import { handleStatusError } from "../services/handleStatusError.js";
 
 let credentials = null;
 let pullRequests = [];
@@ -19,7 +19,7 @@ const spinner = Ora();
  */
 export const getHeaders = (method, token) => {
   return {
-    method: method,
+    method,
     headers: {
       Authorization:
         "Basic " + Buffer.from(`Basic :${token}`).toString("base64"),
@@ -53,10 +53,10 @@ export const authorization = async (credential) => {
     getHeaders("GET", credential.token)
   )
     .then((res) => {
-      handleStatusError(res.status)
+      handleStatusError(res.status);
     })
-    .catch((err) => {
-      handleStatusError(401)
+    .catch((_err) => {
+      handleStatusError(401);
     });
   credentials = credential;
 };
@@ -110,7 +110,7 @@ export const getRepositoryInProject = async (credential, single) => {
       handleStatusError(res.status);
       return res.json();
     })
-    .catch((err) => {
+    .catch((_err) => {
       handleStatusError(500);
     });
 
@@ -127,7 +127,7 @@ export const getRepositoryInProject = async (credential, single) => {
 export const getRepositoryInformation = async (repositories) => {
   const limit = pLimit(5);
   const spinner = Ora();
-  let store = [];
+  const store = [];
 
   for (const repo of repositories) {
     if (repo.isDisabled) {
@@ -135,7 +135,7 @@ export const getRepositoryInformation = async (repositories) => {
       continue;
     }
 
-    let authorization = {
+    const authorization = {
       organization: credentials.organization,
       project: repo.project.name,
       repositoryID: repo.id,
@@ -144,11 +144,11 @@ export const getRepositoryInformation = async (repositories) => {
     store.push({ auth: authorization, repoName: repo.name });
   }
 
-  let promises = store.map((item) => {
+  const promises = store.map((item) => {
     return limit(() => storeRepositoryPromise(item.auth, item.repoName));
   });
 
-  //Store fetched PR information into global variable
+  // Store fetched PR information into global variable
   pullRequests = pullRequests.concat(await Promise.all(promises));
 };
 
@@ -232,7 +232,7 @@ export const getAzureDevOpsRepoPR = async (repo) => {
  */
 export const storePullRequest = (organization, data, mostPr) => {
   organization = organization.replace(/\s/g, "");
-  let dir = `./${organization}-Pull-Requests`;
+  const dir = `./${organization}-Pull-Requests`;
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir);
   }
@@ -243,7 +243,7 @@ export const storePullRequest = (organization, data, mostPr) => {
     { id: "numOfPr", title: "Number Of Pull Requests" },
   ];
 
-  let path = `./${organization}-Pull-Requests/Pull-Requests.csv`;
+  const path = `./${organization}-Pull-Requests/Pull-Requests.csv`;
   console.log("");
   spinner.start("Exporting...");
   exportCSV.csvExporter(path, headers).writeRecords(data);

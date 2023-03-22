@@ -2,16 +2,16 @@
 
 import fetch from "node-fetch";
 import Ora from "ora";
-const spinner = Ora();
-const githubGraphQL = "https://api.github.com/graphql";
 import * as exportCSV from "../services/exportCSV.js";
 import fs from "fs";
 import { handleStatusError } from "../services/handleStatusError.js";
+const spinner = Ora();
+const githubGraphQL = "https://api.github.com/graphql";
 
 /**
  * Running PullRequest and issues array
  */
-let metrics = [];
+const metrics = [];
 
 /**
  * Valid user credentials
@@ -31,7 +31,7 @@ let count = 0;
 /**
  * Org metrics
  */
-let orgMetrics = {
+const orgMetrics = {
   mostPr: 0,
   mostIssues: 0,
 };
@@ -136,7 +136,7 @@ export const fetchOrgInfo = async (org, server, token) => {
       handleStatusError(res.status);
       return res.json();
     })
-    .catch((err) => {
+    .catch((_err) => {
       handleStatusError(500);
     });
 };
@@ -152,7 +152,7 @@ export const authorization = async (credentials) => {
   fetched = await fetchRepoInOrg(
     credentials.organization,
     credentials.token,
-    credentials.server, 
+    credentials.server,
     ""
   );
 
@@ -169,15 +169,15 @@ export const authorization = async (credentials) => {
 
 /**
  * Fetching and Storing metrics controller
- * 
+ *
  * * @param {[Objects]} server the graphql endpoint for a GHES instance
  */
 export const fetchingController = async (server) => {
-  //fetching PR and ISSUE metrics
+  // fetching PR and ISSUE metrics
   await fetchRepoMetrics(fetched.data.organization.repositories.edges);
 
   if (metrics) {
-    let org = auth.organization.replace(/\s/g, "");
+    const org = auth.organization.replace(/\s/g, "");
     await storeRepoMetrics(org);
     await storeOrgMetrics(org, server);
   }
@@ -193,7 +193,7 @@ export const fetchRepoMetrics = async (repositories) => {
     spinner.start(
       `(${count}/${fetched.data.organization.repositories.totalCount}) Fetching metrics for repo ${repo.node.name}`
     );
-    let repoInfo = {
+    const repoInfo = {
       name: repo.node.name,
       pushedAt: repo.node.pushedAt,
       isArchived: repo.node.isArchived,
@@ -206,6 +206,7 @@ export const fetchRepoMetrics = async (repositories) => {
       wikiEnabled: repo.node.hasWikiEnabled,
       diskUsage: repo.node.diskUsage,
     };
+
     if (repo.node.pullRequests.totalCount > orgMetrics.mostPr) {
       orgMetrics.mostPr = repo.node.pullRequests.totalCount;
     }
@@ -238,7 +239,6 @@ export const fetchRepoMetrics = async (repositories) => {
       `(${count}/${fetched.data.organization.repositories.totalCount}) Fetched next 100 repos`
     );
     await fetchRepoMetrics(result.data.organization.repositories.edges);
-    return;
   }
 };
 
@@ -256,7 +256,7 @@ export const storeRepoMetrics = async (organization) => {
     fs.mkdirSync(dir);
   }
 
-  let headers = [
+  const headers = [
     { id: "name", title: "Repository Name" },
     { id: "pushedAt", title: "Last Push Date" },
     { id: "isArchived", title: "Is Archived?" },
@@ -277,10 +277,9 @@ export const storeRepoMetrics = async (organization) => {
   spinner.succeed(`Exporting Completed: ${path}`);
 };
 
-
 /**
- * Determine if the user is targeting a GHES instance or not. 
- * 
+ * Determine if the user is targeting a GHES instance or not.
+ *
  * * @param {[Objects]} server the graphql endpoint for a GHES instance
  */
 export const determineGraphQLEndpoint = async (server) => {
@@ -295,7 +294,7 @@ export const determineGraphQLEndpoint = async (server) => {
  * Store Organization information into separate CSV
  *
  * @param {String} organization the organization name
- * 
+ *
  * @param {[Objects]} server the graphql endpoint for a GHES instance
  */
 export const storeOrgMetrics = async (organization, server) => {
@@ -306,7 +305,7 @@ export const storeOrgMetrics = async (organization, server) => {
   }
 
   // Total number of pull-request and issues
-  let totalCount = metrics.reduce(
+  const totalCount = metrics.reduce(
     (prev, current) => {
       return {
         pr: prev.pr + current.numOfPullRequests,

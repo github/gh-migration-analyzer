@@ -1,0 +1,11 @@
+name: GH Migration Analyszer CI
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install modules
+      run: yarn
+    - name: Run ESLint
+      run: npm install eslint-config-prettier eslint-plugin-prettier && npx eslint .

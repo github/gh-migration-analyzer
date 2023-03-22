@@ -7,10 +7,9 @@ import { createObjectCsvWriter as createCsvWriter } from "csv-writer";
  * @param {string} path the name of repository
  * @returns {object} the headers of CVS file
  */
- export const csvExporter = (path, header) =>
- createCsvWriter({
-   path: path,
-   header: header,
-   headerIdDelimiter: ".",
- });
-
+export const csvExporter = (path, header) =>
+  createCsvWriter({
+    path,
+    header,
+    headerIdDelimiter: ".",
+  });
