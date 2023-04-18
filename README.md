@@ -54,6 +54,7 @@ Options:
   -o, --organization <organization> GitHub organization name (required)
   -t, --token <PAT> GitHub personal access token
   -s, --server <GRAPHQL URL> GraphQL endpoint for a GHES instance. 
+  -a, --allow-untrusted-ssl-certificates Allow connections to a GitHub API endpoint that presents a SSL certificate that isn't issued by a trusted CA"
   -h, --help Help command for GitHub options
 
 ````

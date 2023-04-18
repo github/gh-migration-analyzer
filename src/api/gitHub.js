@@ -5,6 +5,7 @@ import Ora from "ora";
 import * as exportCSV from "../services/exportCSV.js";
 import fs from "fs";
 import { handleStatusError } from "../services/handleStatusError.js";
+import https from "https";
 const spinner = Ora();
 const githubGraphQL = "https://api.github.com/graphql";
 
@@ -41,62 +42,13 @@ const orgMetrics = {
  *
  * @param {string} org the organization
  * @param {string} token the token
+ * @param {string} server the graphql endpoint for a GHES instance
+ * @param {boolean} allowUntrustedSslCertificates the allow connections to a GitHub API endpoint that presents a SSL certificate that isn't issued by a trusted CA option
  * @param {string} cursor the last repository fetched
- * @param {[Objects]} server the graphql endpoint for a GHES instance
+ * @returns {[Objects]} the fetched repo information
  */
-export const fetchRepoInOrg = async (org, token, server, cursor) => {
-  return await fetch(await determineGraphQLEndpoint(server), {
-    method: "POST",
-    headers: {
-      Authorization: `bearer ${token}`,
-    },
-    body: JSON.stringify({
-      query: `{
-        rateLimit {
-          limit
-          cost
-          remaining
-          resetAt
-        }
-        organization(login: "${org}") {
-          repositories(first: 50${cursor}){
-            totalCount
-            edges {
-              cursor
-              node {
-                projects(first:1){
-                  totalCount
-                }  
-                hasWikiEnabled
-                issues(first: 1) {
-                  totalCount
-                }
-                pullRequests(first: 1) {
-                  totalCount
-                }
-                discussions(first: 1) {
-                  totalCount
-                }
-                packages(first: 1) {
-                  totalCount
-                }
-                releases(first: 1) {
-                  totalCount
-                }
-                name
-                id
-                url
-                pushedAt
-                isPrivate
-                isArchived
-                diskUsage
-              }
-            }
-          }
-        }
-      }`,
-    }),
-  })
+export const fetchRepoInOrg = async (org, token, server, allowUntrustedSslCertificates, cursor) => {
+  return await fetch(determineGraphQLEndpoint(server), fetchRepoInOrgInfoOptions(org, token, allowUntrustedSslCertificates, cursor))
     .then((res) => {
       handleStatusError(res.status);
       return res.json();
@@ -111,27 +63,11 @@ export const fetchRepoInOrg = async (org, token, server, cursor) => {
  *
  * @param {string} org the org
  * @param {string} token the token
+ * @param {boolean} allowUntrustedSslCertificates the allow connections to a GitHub API endpoint that presents a SSL certificate that isn't issued by a trusted CA option
  * @returns {object} the fetched org information
  */
-export const fetchOrgInfo = async (org, server, token) => {
-  return await fetch(await determineGraphQLEndpoint(server), {
-    method: "POST",
-    headers: {
-      Authorization: `bearer ${token}`,
-    },
-    body: JSON.stringify({
-      query: `{
-        organization(login: "${org}") {
-          projects(first: 1) {
-            totalCount
-          }
-          membersWithRole(first: 1) {
-            totalCount
-          }
-        }
-      }`,
-    }),
-  })
+export const fetchOrgInfo = async (org, server, token, allowUntrustedSslCertificates) => {
+  return await fetch(determineGraphQLEndpoint(server), fetchOrgInfoOptions(org,token,allowUntrustedSslCertificates))
     .then((res) => {
       handleStatusError(res.status);
       return res.json();
@@ -148,11 +84,11 @@ export const fetchOrgInfo = async (org, server, token) => {
  * @param {object} credentials the credentials
  */
 export const authorization = async (credentials) => {
-  spinner.start("Authorizing with GitHub");
   fetched = await fetchRepoInOrg(
     credentials.organization,
     credentials.token,
     credentials.server,
+    credentials.allowUntrustedSslCertificates,
     ""
   );
 
@@ -233,6 +169,7 @@ export const fetchRepoMetrics = async (repositories) => {
       auth.organization,
       auth.token,
       auth.server,
+      auth.allowUntrustedSslCertificates,
       `, after: "${cursor}"`
     );
     spinner.succeed(
@@ -280,15 +217,117 @@ export const storeRepoMetrics = async (organization) => {
 /**
  * Determine if the user is targeting a GHES instance or not.
  *
- * * @param {[Objects]} server the graphql endpoint for a GHES instance
+ * * @param {string} server the graphql endpoint for a GHES instance
  */
-export const determineGraphQLEndpoint = async (server) => {
+export function determineGraphQLEndpoint (server) {
   if (!server) {
     return githubGraphQL;
   } else {
     return server;
   }
 };
+
+
+/**
+ * fetch options for fetchOrgInfo
+ * 
+ * @param {string} org the org
+ * @param {string} token the token
+ * @param {boolean} allowUntrustedSslCertificates the allow connections to a GitHub API endpoint that presents a SSL certificate that isn't issued by a trusted CA option
+ * @returns {object} the fetch options
+ */
+export function fetchOrgInfoOptions (org, token, allowUntrustedSslCertificates) {
+  let fetchOptions = {
+    method: "POST",
+    headers: {
+      Authorization: `bearer ${token}`,
+    },
+    body: JSON.stringify({
+      query: `{
+        organization(login: "${org}") {
+          projects(first: 1) {
+            totalCount
+          }
+          membersWithRole(first: 1) {
+            totalCount
+          }
+        }
+      }`,
+    }),
+  }
+  if (allowUntrustedSslCertificates) {
+    fetchOptions.agent = new https.Agent({rejectUnauthorized: false,});
+  }
+  return fetchOptions
+};
+
+/**
+ * fetch options for fetchRepoInOrg
+ *
+ * @param {string} org the organization
+ * @param {string} token the token
+ * @param {boolean} allowUntrustedSslCertificates the allow connections to a GitHub API endpoint that presents a SSL certificate that isn't issued by a trusted CA option
+ * @param {string} cursor the last repository fetched
+ * @returns {object} the fetch options
+ */
+export function fetchRepoInOrgInfoOptions (org, token, allowUntrustedSslCertificates, cursor) {
+  let fetchOptions = {
+    method: "POST",
+    headers: {
+      Authorization: `bearer ${token}`,
+    },
+    body: JSON.stringify({
+      query: `{
+        rateLimit {
+          limit
+          cost
+          remaining
+          resetAt
+        }
+        organization(login: "${org}") {
+          repositories(first: 50${cursor}){
+            totalCount
+            edges {
+              cursor
+              node {
+                projects(first:1){
+                  totalCount
+                }  
+                hasWikiEnabled
+                issues(first: 1) {
+                  totalCount
+                }
+                pullRequests(first: 1) {
+                  totalCount
+                }
+                discussions(first: 1) {
+                  totalCount
+                }
+                packages(first: 1) {
+                  totalCount
+                }
+                releases(first: 1) {
+                  totalCount
+                }
+                name
+                id
+                url
+                pushedAt
+                isPrivate
+                isArchived
+                diskUsage
+              }
+            }
+          }
+        }
+      }`,
+    }),
+  }
+  if (allowUntrustedSslCertificates){
+    fetchOptions.agent = new https.Agent({rejectUnauthorized: false,});
+  }
+  return fetchOptions
+}
 
 /**
  * Store Organization information into separate CSV
@@ -315,7 +354,7 @@ export const storeOrgMetrics = async (organization, server) => {
     { pr: 0, issue: 0 }
   );
 
-  const orgInfo = await fetchOrgInfo(organization, server, auth.token);
+  const orgInfo = await fetchOrgInfo(organization, server, auth.token, auth.allowUntrustedSslCertificates);
   const storeData = [
     {
       numOfRepos: metrics.length,
