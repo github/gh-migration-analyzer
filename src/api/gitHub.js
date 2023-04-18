@@ -43,7 +43,7 @@ const orgMetrics = {
  * @param {string} org the organization
  * @param {string} token the token
  * @param {string} server the graphql endpoint for a GHES instance
- * @param {boolean} allowUntrustedSslCertificates the allow connections to a GitHub API endpoint that presents a SSL certificate that isn't issued by a trusted CA option
+ * @param {boolean} allowUntrustedSslCertificate allow connections to a GitHub API endpoint that presents a SSL certificate that isn't issued by a trusted CA
  * @param {string} cursor the last repository fetched
  * @returns {[Objects]} the fetched repo information
  */
@@ -67,7 +67,7 @@ export const fetchRepoInOrg = async (org, token, server, allowUntrustedSslCertif
  * @returns {object} the fetched org information
  */
 export const fetchOrgInfo = async (org, server, token, allowUntrustedSslCertificates) => {
-  return await fetch(determineGraphQLEndpoint(server), fetchOrgInfoOptions(org,token,allowUntrustedSslCertificates))
+  return await fetch(determineGraphQLEndpoint(server), fetchOrgInfoOptions(org, token, allowUntrustedSslCertificates))
     .then((res) => {
       handleStatusError(res.status);
       return res.json();
