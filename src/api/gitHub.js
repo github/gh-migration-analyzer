@@ -47,8 +47,17 @@ const orgMetrics = {
  * @param {string} cursor the last repository fetched
  * @returns {[Objects]} the fetched repo information
  */
-export const fetchRepoInOrg = async (org, token, server, allowUntrustedSslCertificates, cursor) => {
-  return await fetch(determineGraphQLEndpoint(server), fetchRepoInOrgInfoOptions(org, token, allowUntrustedSslCertificates, cursor))
+export const fetchRepoInOrg = async (
+  org,
+  token,
+  server,
+  allowUntrustedSslCertificates,
+  cursor
+) => {
+  return await fetch(
+    determineGraphQLEndpoint(server),
+    fetchRepoInOrgInfoOptions(org, token, allowUntrustedSslCertificates, cursor)
+  )
     .then((res) => {
       handleStatusError(res.status);
       return res.json();
@@ -66,8 +75,16 @@ export const fetchRepoInOrg = async (org, token, server, allowUntrustedSslCertif
  * @param {boolean} allowUntrustedSslCertificates the allow connections to a GitHub API endpoint that presents a SSL certificate that isn't issued by a trusted CA option
  * @returns {object} the fetched org information
  */
-export const fetchOrgInfo = async (org, server, token, allowUntrustedSslCertificates) => {
-  return await fetch(determineGraphQLEndpoint(server), fetchOrgInfoOptions(org, token, allowUntrustedSslCertificates))
+export const fetchOrgInfo = async (
+  org,
+  server,
+  token,
+  allowUntrustedSslCertificates
+) => {
+  return await fetch(
+    determineGraphQLEndpoint(server),
+    fetchOrgInfoOptions(org, token, allowUntrustedSslCertificates)
+  )
     .then((res) => {
       handleStatusError(res.status);
       return res.json();
@@ -219,24 +236,23 @@ export const storeRepoMetrics = async (organization) => {
  *
  * * @param {string} server the graphql endpoint for a GHES instance
  */
-export function determineGraphQLEndpoint (server) {
+export function determineGraphQLEndpoint(server) {
   if (!server) {
     return githubGraphQL;
   } else {
     return server;
   }
-};
-
+}
 
 /**
  * fetch options for fetchOrgInfo
- * 
+ *
  * @param {string} org the org
  * @param {string} token the token
  * @param {boolean} allowUntrustedSslCertificates the allow connections to a GitHub API endpoint that presents a SSL certificate that isn't issued by a trusted CA option
  * @returns {object} the fetch options
  */
-export function fetchOrgInfoOptions (org, token, allowUntrustedSslCertificates) {
+export function fetchOrgInfoOptions(org, token, allowUntrustedSslCertificates) {
   let fetchOptions = {
     method: "POST",
     headers: {
@@ -254,12 +270,12 @@ export function fetchOrgInfoOptions (org, token, allowUntrustedSslCertificates) 
         }
       }`,
     }),
-  }
+  };
   if (allowUntrustedSslCertificates) {
-    fetchOptions.agent = new https.Agent({rejectUnauthorized: false,});
+    fetchOptions.agent = new https.Agent({ rejectUnauthorized: false });
   }
-  return fetchOptions
-};
+  return fetchOptions;
+}
 
 /**
  * fetch options for fetchRepoInOrg
@@ -270,7 +286,12 @@ export function fetchOrgInfoOptions (org, token, allowUntrustedSslCertificates) 
  * @param {string} cursor the last repository fetched
  * @returns {object} the fetch options
  */
-export function fetchRepoInOrgInfoOptions (org, token, allowUntrustedSslCertificates, cursor) {
+export function fetchRepoInOrgInfoOptions(
+  org,
+  token,
+  allowUntrustedSslCertificates,
+  cursor
+) {
   let fetchOptions = {
     method: "POST",
     headers: {
@@ -322,11 +343,11 @@ export function fetchRepoInOrgInfoOptions (org, token, allowUntrustedSslCertific
         }
       }`,
     }),
+  };
+  if (allowUntrustedSslCertificates) {
+    fetchOptions.agent = new https.Agent({ rejectUnauthorized: false });
   }
-  if (allowUntrustedSslCertificates){
-    fetchOptions.agent = new https.Agent({rejectUnauthorized: false,});
-  }
-  return fetchOptions
+  return fetchOptions;
 }
 
 /**
@@ -354,7 +375,12 @@ export const storeOrgMetrics = async (organization, server) => {
     { pr: 0, issue: 0 }
   );
 
-  const orgInfo = await fetchOrgInfo(organization, server, auth.token, auth.allowUntrustedSslCertificates);
+  const orgInfo = await fetchOrgInfo(
+    organization,
+    server,
+    auth.token,
+    auth.allowUntrustedSslCertificates
+  );
   const storeData = [
     {
       numOfRepos: metrics.length,

@@ -67,7 +67,10 @@ program
   .option("-o, --organization <organization>", "Organization Name")
   .option("-t, --token <PAT>", "Personal Access Token")
   .option("-s, --server <GRAPHQL URL>", "GHES GraphQL Endpoint")
-  .option("-a, --allow-untrusted-ssl-certificates", "Allow connections to a GitHub API endpoint that presents a SSL certificate that isn't issued by a trusted CA")
+  .option(
+    "-a, --allow-untrusted-ssl-certificates",
+    "Allow connections to a GitHub API endpoint that presents a SSL certificate that isn't issued by a trusted CA"
+  )
   .alias("a")
   .description("Fetch GitHub Organization Metrics")
   .action(async (options) =>
