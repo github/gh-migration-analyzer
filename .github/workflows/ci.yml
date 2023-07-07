@@ -1,4 +1,4 @@
-name: GH Migration Analyszer CI
+name: GH Migration Analyzer CI
 on: push
 jobs:
   build:
@@ -9,3 +9,5 @@ jobs:
       run: yarn
     - name: Run ESLint
       run: npm install eslint-config-prettier eslint-plugin-prettier && npx eslint .
+    - name: Run tests
+      run: yarn test
