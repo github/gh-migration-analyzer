@@ -1,4 +1,4 @@
-name: GH Migration Analyszer CI
+name: GH Migration Analyzer CI
 on: push
 jobs:
   build:
