@@ -9,3 +9,5 @@ jobs:
       run: yarn
     - name: Run ESLint
       run: npm install eslint-config-prettier eslint-plugin-prettier && npx eslint .
+    - name: Run tests
+      run: yarn test
