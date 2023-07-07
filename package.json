@@ -48,5 +48,8 @@
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-promise": "^6.1.1",
     "jest": "^27.3.1"
+  },
+  "overrides": {
+    "word-wrap": "npm:@aashutoshrathi/word-wrap"
   }
 }
