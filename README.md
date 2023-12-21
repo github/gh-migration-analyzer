@@ -85,3 +85,9 @@ In the future, the following areas of focus will be added:
 ## Contributions
 
 This application was originally written by Aryan Patel ([@arypat](https://github.com/AryPat)) and Kevin Smith ([@kevinmsmith131](https://github.com/kevinmsmith131)). See [Contributing](CONTRIBUTING.md) for more information on how to get involved. 
+
+## Support
+
+This is a community project *which is not supported by GitHub Support*. 
+
+Please engage with the community via an [issue](https://github.com/github/gh-migration-analyzer/issues) if you need help, and PRs are always welcome!
