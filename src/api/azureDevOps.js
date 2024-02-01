@@ -73,7 +73,7 @@ export const getAllProjects = async (credential) => {
   do {
     result = await fetch(
       `https://dev.azure.com/${credential.organization}/_apis/projects` +
-        `?$skip=${skip}&$top=100&api-version=6.0`,
+      `?$skip=${skip}&$top=100&api-version=6.0`,
       getHeaders("GET", credential.token)
     )
       .then((res) => res.json())
@@ -203,9 +203,14 @@ export const getAzureDevOpsRepoPR = async (repo) => {
   let result = {};
 
   do {
+    // PStoner3 - Fixing error if `repo.name` is null
+    if (repo.name === undefined) {
+      continue;
+    }
+
     result = await fetch(
       repo._links.pullRequests.href +
-        `?$skip=${skip}&$top=100&searchCriteria.status=all&api-version=6.0`,
+      `?$skip=${skip}&$top=100&searchCriteria.status=all&api-version=6.0`,
       getHeaders("GET", repo.Authorization.token)
     )
       .then((res) => res.json())
